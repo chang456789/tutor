@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>教學講義資料庫</title>
+  <style>
+    body { font-family: "Microsoft JhengHei", sans-serif; padding: 2rem; background: #f4f4f4; }
+    h1 { color: #333; }
+    form, .entry { background: #fff; padding: 1rem; border-radius: 0.75rem; box-shadow: 0 2px 6px rgba(0,0,0,0.1); margin-bottom: 1rem; }
+    label { display: block; margin-top: 1rem; }
+    input, textarea { width: 100%; padding: 0.5rem; margin-top: 0.25rem; border: 1px solid #ccc; border-radius: 0.5rem; }
+    input[type="submit"] { background: #007bff; color: white; border: none; margin-top: 1rem; cursor: pointer; }
+    input[type="submit"]:hover { background: #0056b3; }
+    iframe { width: 100%; height: 400px; border: none; margin-top: 1rem; }
+    .delete-btn {
+      background-color: #dc3545;
+      color: white;
+      border: none;
+      padding: 0.4rem 0.8rem;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      margin-top: 0.5rem;
+    }
+    .delete-btn:hover {
+      background-color: #c82333;
+    }
+  </style>
+</head>
+<body>
+  <h1>教學講義資料庫</h1>
+
+  <form id="dataForm">
+    <label>學生姓名：<input type="text" name="student" required></label>
+    <label>主題：<input type="text" name="topic" required></label>
+    <label>日期：<input type="date" name="date" required></label>
+    <label>課程進度：<textarea name="progress" rows="3"></textarea></label>
+    <label>Google 文件網址：<input type="url" name="doc_url" required></label>
+    <input type="submit" value="新增資料">
+  </form>
+
+  <hr>
+
+  <div id="entries"></div>
+
+  <script>
+    document.getElementById('dataForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const form = e.target;
+      const student = form.student.value;
+      const topic = form.topic.value;
+      const date = form.date.value;
+      const progress = form.progress.value;
+      const docUrl = form.doc_url.value;
+
+      const entryDiv = document.createElement('div');
+      entryDiv.className = 'entry';
+      entryDiv.innerHTML = `
+        <h3>${student} - ${date} - ${topic}</h3>
+        <p><strong>課程進度：</strong>${progress}</p>
+        <iframe src="${docUrl.replace('/edit', '/preview')}" allowfullscreen></iframe>
+        <button class="delete-btn">刪除這筆紀錄</button>
+      `;
+
+      // 加入刪除功能
+      entryDiv.querySelector('.delete-btn').addEventListener('click', () => {
+        if (confirm('確定要刪除這筆紀錄嗎？')) {
+          entryDiv.remove();
+        }
+      });
+
+      document.getElementById('entries').prepend(entryDiv);
+      form.reset();
+    });
+  </script>
+</body>
+</html>
